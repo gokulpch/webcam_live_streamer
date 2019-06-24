@@ -1,5 +1,4 @@
 FROM python:3.6
-MAINTAINER Arthur Geron <johnnyblack000@hotmail.com>
 USER root
 RUN apt-get update && \
         apt-get install -y \
@@ -24,9 +23,9 @@ RUN pip install numpy
 
 WORKDIR /
 RUN wget https://github.com/opencv/opencv/archive/3.3.0.zip \
-&& git clone https://github.com/arthurgeron/picamera \
+&& git clone https://github.com/gokulpch/webcam_live_streamer \
 && unzip 3.3.0.zip \
-&& cd picamera \
+&& cd webcam_live_streamer \
 && pip install -r requirements.txt \
 && cd .. \
 && sed -i 's/#if NPY_INTERNAL_BUILD/#ifndef NPY_INTERNAL_BUILD\n#define NPY_INTERNAL_BUILD/g' /usr/local/lib/python3.6/site-packages/numpy/core/include/numpy/npy_common.h \
@@ -53,8 +52,8 @@ RUN wget https://github.com/opencv/opencv/archive/3.3.0.zip \
 && rm /3.3.0.zip \
 && rm -r /opencv-3.3.0 \
 && cd ../.. \
-&& chmod +x picamera/main.py
+&& chmod +x webcam_live_streamer/main.py
 #Expose port 80
 EXPOSE 80
 #Default command
-CMD ["picamera/main.py"]
+CMD ["webcam_live_streamer/main.py"]
