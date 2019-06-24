@@ -3,21 +3,32 @@ USER root
 RUN apt-get update && \
         apt-get install -y \
         build-essential \
+        software-properties-common \
         cmake \
+        apt-utils \
         git \
         wget \
         unzip \
         yasm \
-        pkg-config \
+        pkg-config
+
+#RUN add-apt-repository -y “deb http://security.ubuntu.com/ubuntu xenial-security main”
+
+RUN apt-get update && \
+        apt-get install -y \
         libswscale-dev \
         libtbb2 \
         libtbb-dev \
         libjpeg-dev \
         libpng-dev \
         libtiff-dev \
-        libjasper-dev \
         libavformat-dev \
         libpq-dev
+
+RUN git clone https://github.com/jasperproject/jasper-client.git jasper && \
+ 		chmod +x jasper/jasper.py && \
+		pip install --upgrade setuptools && \ 
+		pip install -r jasper/client/requirements.txt
 
 RUN pip install numpy
 
