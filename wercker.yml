@@ -1,0 +1,24 @@
+
+box:
+  id: armv7/armhf-ubuntu:latest
+  cmd: /bin/sh
+build:
+  steps:
+    - script:
+        name: Install Dependencies
+        code: |
+            apt-get install docker.io
+    - script:
+        name: Build Image
+        code: |
+            docker build .
+deploy:
+  steps:
+    - script:
+        name: Authenticate
+        code: |
+            docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+    - script:
+        name: Push
+        code: |
+            docker push $DOCKER_USER/docker-python3-opencv-security-camera
