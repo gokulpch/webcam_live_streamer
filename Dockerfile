@@ -33,35 +33,36 @@ RUN git clone https://github.com/jasperproject/jasper-client.git jasper && \
 RUN pip install numpy
 
 WORKDIR /
-RUN wget https://github.com/opencv/opencv/archive/3.3.0.zip \
+RUN apt-get install -y --no-install-recommends python python-dev python-pip build-essential cmake git pkg-config libtiff5-dev libgtk2.0-dev libavcodec-dev libavformat-dev libswscale-dev libv4l-dev libatlas-base-dev gfortran libavresample-dev libgphoto2-dev libgstreamer-plugins-base1.0-dev libdc1394-22-dev \ 
+&& cd /opt \
+&& git clone https://github.com/opencv/opencv_contrib.git \
+&& cd opencv_contrib \
+&& git checkout 3.4.0 \	
+&& cd /opt \
+&& git clone https://github.com/opencv/opencv.git \
+&& cd opencv \
+&& git checkout 3.4.0 \
+&& mkdir build \
+&& cd build \
+&& cmake -D CMAKE_BUILD_TYPE=RELEASE \
+	 -D BUILD_NEW_PYTHON_SUPPORT=ON \
+	 -D CMAKE_INSTALL_PREFIX=/usr/local \
+	 -D INSTALL_C_EXAMPLES=OFF \
+	 -D INSTALL_PYTHON_EXAMPLES=OFF \
+	 -D OPENCV_EXTRA_MODULES_PATH=/opt/opencv_contrib/modules \
+	 -D PYTHON_EXECUTABLE=/usr/bin/python2.7 \
+	 -D BUILD_EXAMPLES=OFF /opt/opencv \
+&& make -j $(nproc) \
+&& make install \
+&& ldconfig \
+&& rm -rf /var/lib/apt/lists/* \
+&& rm -rf /opt/opencv* \
+&& cd / \
 && git clone https://github.com/gokulpch/webcam_live_streamer \
-&& unzip 3.3.0.zip \
 && cd webcam_live_streamer \
 && pip install -r requirements.txt \
 && cd .. \
 && sed -i 's/#if NPY_INTERNAL_BUILD/#ifndef NPY_INTERNAL_BUILD\n#define NPY_INTERNAL_BUILD/g' /usr/local/lib/python3.6/site-packages/numpy/core/include/numpy/npy_common.h \
-&& mkdir /opencv-3.3.0/cmake_binary \
-&& cd /opencv-3.3.0/cmake_binary \
-&& cmake -DBUILD_TIFF=ON \
-  -DBUILD_opencv_java=OFF \
-  -DWITH_CUDA=OFF \
-  -DENABLE_AVX=ON \
-  -DWITH_OPENGL=ON \
-  -DWITH_OPENCL=ON \
-  -DWITH_IPP=ON \
-  -DWITH_TBB=ON \
-  -DWITH_EIGEN=ON \
-  -DWITH_V4L=ON \
-  -DBUILD_TESTS=OFF \
-  -DBUILD_PERF_TESTS=OFF \
-  -DCMAKE_BUILD_TYPE=RELEASE \
-  -DCMAKE_INSTALL_PREFIX=$(python3.6 -c "import sys; print(sys.prefix)") \
-  -DPYTHON_EXECUTABLE=$(which python3.6) \
-  -DPYTHON_INCLUDE_DIR=$(python3.6 -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())") \
-  -DPYTHON_PACKAGES_PATH=$(python3.6 -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())") .. \
-&& make install \
-&& rm /3.3.0.zip \
-&& rm -r /opencv-3.3.0 \
 && cd ../.. \
 && chmod +x webcam_live_streamer/main.py
 #Expose port 80

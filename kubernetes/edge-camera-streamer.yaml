@@ -18,7 +18,7 @@ spec:
           path: /dev/video0
         name: videosource
       containers:
-      - image: gokulpch/edge-camera-streamer:v1.0
+      - image: gokulpch/webcam-streamer:v1
         imagePullPolicy: IfNotPresent
         name: edge-camera-streamer
         ports:
